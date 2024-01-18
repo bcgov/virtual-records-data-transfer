@@ -25,8 +25,8 @@ func main() {
 	destinationPath := os.Getenv("DESTINATION_PATH")
 
 	// Check if the source path is empty
-	if os.Getenv("SOURCE_PATH") == "" {
-		log.Fatal().Msg("Source path is empty")
+	if os.Getenv("SOURCE_PATH") == "" || os.Getenv("CIFS_PATH") == "" {
+		log.Fatal().Msg("Source path or CIFS path is empty")
 	}
 
 	//sourcePath := base + "Chunk_Jr\\TESTING"

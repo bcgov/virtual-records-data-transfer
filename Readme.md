@@ -60,7 +60,7 @@ volumes:
   court-cifs-volume: 
     driver_opts: 
       type: cifs 
-      o: "addr={SERVER_NAME_OR_IP},username={username},password={password},vers=3.0" 
+      o: "addr=${SERVER_NAME_OR_IP},username=${USERNAME},password=${PASSWORD},vers=3.0"  
       device: //{SERVER_NAME_OR_IP}/{SHARED_PATH}
 ```
 And then use this volume in out container
@@ -80,15 +80,12 @@ services:
         - SECRET_ACCESS_KEY=${SECRET_ACCESS_KEY:-0}
         - BUCKET_NAME=${BUCKET_NAME:-""}
         - S3_ENDPOINT=${S3_ENDPOINT:-""}
+    env_file:
+      - .env
     environment:
-      - SMB_SERVER={SMB_SERVER}# //HOST_OR_IP
-      - SMB_SHARE={SMB_SHARE}
-      - SOURCE_PATH=${CHUNK_FOLDER_1:-""} # Update with the specific smb  folders for each container
-      - DESTINATION_PATH={DESTINATION_PATH} # s3fs local destination 
-      - BUCKET_NAME={BUCKET_NAME}
-      - S3_ENDPOINT={S3_ENDPOINT}
+      - SOURCE_PATH=${CHUNK_FOLDER_1:-""}
     volumes:
-      - court-cifs-volume:/mnt/smb # <- path to mouth inside the container
+      - court-cifs-volume:${CIFS_PATH:-""}
 ```
 
 ### Object Store Map using S3FS
@@ -111,6 +108,12 @@ ACCESS_KEY_ID={ACCESS_KEY_ID}
 SECRET_ACCESS_KEY={SECRET_ACCESS_KEY}
 BUCKET_NAME={BUCKET_NAME}
 S3_ENDPOINT={S3_ENDPOINT}
+USERNAME={USERNAME}
+PASSWORD={PASSWORD}
+SMB_SERVER={SMB_SERVER}
+SMB_SHARE={SMB_SHARE}
+DESTINATION_PATH={DESTINATION_PATH} # s3fs container mapped path
+CIFS_PATH={CIFS_PATH} # cifs container mapped path
 CHUNK_FOLDER_1={CHUNK_FOLDER_1} # The folder you want to migrate e.g. `/Chunk_Jr/TESTING``
 CHUNK_FOLDER_1_PROFILE=migrate # migrate folder or not, options are migrate, nomigrate
 CHUNK_FOLDER_2={CHUNK_FOLDER_2}
